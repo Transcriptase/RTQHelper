@@ -1,0 +1,22 @@
+RT Mix Plan 2012-4-21
+
+Sample Prep (1 ug RNA in 4.0 ul)
+control  1 (666.13 ng/ul):   1.50 ul RNA,   2.50 ul diH2O
+control  2 (252.28 ng/ul):   3.96 ul RNA,   0.04 ul diH2O
+control  3 (638.12 ng/ul):   1.57 ul RNA,   2.43 ul diH2O
+drug     1 (290.88 ng/ul):   3.44 ul RNA,   0.56 ul diH2O
+drug     2 (783.31 ng/ul):   1.28 ul RNA,   2.72 ul diH2O
+drug     3 (573.43 ng/ul):   1.74 ul RNA,   2.26 ul diH2O
+
+Master Mix 1 (Add 9.0 ul per sample):
+
+Random Hexamer Primers:  6.30 ul
+dNTP                  :  6.30 ul
+diH20                 : 44.10 ul
+
+Master Mix 2 (Add 7.0 ul per sample):
+
+First Strand Buffer   : 25.20 ul
+DTT                   :  6.30 ul
+RNAse Inhibitor       :  6.30 ul
+Reverse Transcriptase :  6.30 ul
