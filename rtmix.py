@@ -46,6 +46,11 @@ class RTReaction(object):
         self.mix1_setup()
 
     def mix1_setup(self):
+        '''
+        Because the amount of RNA must be held constant but the starting concentrations are different,
+        this function first determines how to prepare 1 ug samples of RNA and then calculates the
+        rest of the mix
+        '''
         self.max_vol = 0
         free_vol = self.final_vol - self.primer.vol_per_sample - self.dntp.vol_per_sample
         volume_warning = False
@@ -73,6 +78,7 @@ class RTReaction(object):
         print self.plan_text
         
     def make_plan_text(self):
+        '''Creates a formatted string describing the reaction'''
         self.sample_list.sort(key = lambda x: x.replicate)
         self.sample_list.sort(key = lambda x: x.source)
         max_chem_name = max([max([len(chem.name) for chem in self.mix2]), max([len(chem.name) for chem in self.mix1])])
@@ -96,10 +102,12 @@ class RTReaction(object):
         
         
     def make_file(self):
+        '''Outputs the plan text into a text file'''
         self.make_plan_text()
         filename = "{year}{month}{day} RT mix.txt".format(year = self.created.year, month = self.created.month, day = self.created.day)
         f = open(filename, 'w')
         f.write(self.plan_text)
+        f.close()
         
     
 class VolumeWarning(Exception):
