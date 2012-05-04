@@ -7,6 +7,7 @@ import sample
 import reagent
 import math
 import datetime
+import os
 
 
 
@@ -14,11 +15,12 @@ class RTReaction(object):
     def __init__(self, sample_list):
         self.sample_list = sample_list
         self.created = datetime.datetime.now()
+        self.path = ''
 
         self.primer = reagent.Reagent("Random Hexamer Primers")
         self.dntp =  reagent.Reagent("dNTP")
         self.mix1water = reagent.Reagent("diH20")
-        self.fs_buffer = reagent.Reagent("First Strand Buffer")
+        self.fs_buffer = reagent.Reagent("5X First Strand Buffer")
         self.dtt = reagent.Reagent("DTT")
         self.rnase_inhib = reagent.Reagent("RNAse Inhibitor")
         self.rt = reagent.Reagent("Reverse Transcriptase")
@@ -86,7 +88,7 @@ class RTReaction(object):
         self.plan_text = 'RT Mix Plan {0}-{1}-{2}\n\n'.format(self.created.year, self.created.month, self.created.day)
         self.plan_text += 'Sample Prep (1 ug RNA in {0} ul)\n'.format(self.max_vol)
         for sample in self.sample_list:
-            self.plan_text += '{name:{x}}{rep:>3} ({conc:>5.2f} ng/ul): {rna:>6.2f} ul RNA, {h20:>6.2f} ul diH2O\n'.format(
+            self.plan_text += '{name:{x}}{rep:>3} ({conc:>7.2f} ng/ul): {rna:>4.2f} ul RNA, {h20:>4.2f} ul diH2O\n'.format(
                                                                                                                            name = sample.source,
                                                                                                                            x = max_samp_name,
                                                                                                                            rep = sample.replicate,
@@ -99,13 +101,27 @@ class RTReaction(object):
         self.plan_text += "\nMaster Mix 2 (Add {vol} ul per sample):\n\n".format(vol = sum([chem.vol_per_sample for chem in self.mix2]))
         for chem in self.mix2:
             self.plan_text += "{name:{x}}: {vol:5.2f} ul\n".format(name = chem.name, x = max_chem_name, vol = chem.final_vol)
-        
-        
+            
+    def get_filename(self):
+        now = datetime.datetime.now()
+        success = False
+        i = 0
+        base_name = "{} RT Mix".format(now.strftime("%Y%m%d"))
+        filename = "{base}.{extension}".format(base = base_name, extension = "txt")
+        filename = os.path.join(self.path, filename)
+        while not success: 
+            if not os.path.isfile(filename):
+                success = True
+                return filename
+            else:
+                i += 1
+                filename = "{base} ({num}).{extension}".format(base = base_name, num = i, extension = "csv")  
+           
     def make_file(self):
         '''Outputs the plan text into a text file'''
         self.make_plan_text()
-        filename = "{year}{month}{day} RT mix.txt".format(year = self.created.year, month = self.created.month, day = self.created.day)
-        f = open(filename, 'w')
+        self.filename = self.get_filename()
+        f = open(self.filename, 'w')
         f.write(self.plan_text)
         f.close()
         

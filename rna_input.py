@@ -95,12 +95,7 @@ class Prompter(object):
     
 class TemplateReader(object):
     def __init__(self):
-        self.path =  ''
-        self.filename = self.get_filename()
-        
-    def set_path(self, new_path):
-        self.path = new_path
-        self.filename = os.path.join(self.path, self.filename)
+        self.path =  ''   
         
     def get_filename(self):
         now = datetime.datetime.now()
@@ -108,8 +103,9 @@ class TemplateReader(object):
         i = 0
         base_name = "{} RNA Concentrations".format(now.strftime("%Y%m%d"))
         filename = "{base}.{extension}".format(base = base_name, extension = "csv")
+        filename = os.path.join(self.path, filename)
         while not success: 
-            if not os.path.isfile(self.path + filename):
+            if not os.path.isfile(filename):
                 success = True
                 return filename
             else:
@@ -123,14 +119,15 @@ class TemplateReader(object):
         for row in reader:
             new_samp = sample.Sample()
             new_samp.source = row['source']
-            new_samp.replicate = row['replicate']
-            new_samp.RNA_conc = row['concentration']
+            new_samp.replicate = int(row['replicate'])
+            new_samp.RNA_conc = float(row['concentration'])
             sample_list.append(new_samp)
         f.close()
         return sample_list
     
     def create_template_file(self):
         headers = ["source", "replicate", "concentration"]
+        self.filename = self.get_filename()
         f = open(self.filename, 'w')
         writer = csv.writer(f)
         writer.writerow(headers)
